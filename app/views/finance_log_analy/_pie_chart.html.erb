@@ -1,0 +1,31 @@
+<h2>PIE CHART FOR FINANCE ACTION!!</h2>
+
+<div class="well">
+	<div class="row">
+		<div class="col-md-4" >
+			<canvas id="pie_chart" width="300" height="250"></canvas>
+		</div>
+		<div class="col-md-8">
+			<table class="table table-striped table-bordered table-hover" id="pie_chart_table">
+				<thead>
+					<tr>
+						<th>#</th>
+						<th>Controller.Action</th>
+						<th>Count</th>
+					</tr>
+				</thead>
+				<tbody>
+					<% i=0 %>
+					<% @pie_hash.each do |k,v| %>
+						<% i+=1 %>
+						<tr>
+							<td><%= i%></td>
+							<td><%= k %></td>
+							<td><%= v %></td>
+						</tr>
+					<% end %>
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
