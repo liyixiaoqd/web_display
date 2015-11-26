@@ -1,0 +1,34 @@
+<h2>DOUGHNUT CHART FOR SUBMIT!!</h2>
+
+<div class="well">
+	<div class="row">
+		<div class="col-md-6" >
+			<canvas id="bar_chart_count" width="250" height="200"></canvas>
+		</div>
+		<div class="col-md-6" >
+			<canvas id="bar_chart_amount" width="250" height="200"></canvas>
+		</div>
+		<div class="col-md-12">
+			<table class="table table-striped table-bordered table-hover" id="bar_chart_table">
+				<thead>
+					<tr>
+						<th>PAYMODE</th>
+						<th>Count</th>
+						<th>Amount</th>
+						<th>Avg</th>
+					</tr>
+				</thead>
+				<tbody>
+					<% @pay_total_hash.each do |k,v_arr| %>
+						<tr>
+							<td><%= k %></td>
+							<td><%= v_arr[0] %></td>
+							<td><%= v_arr[1] %></td>
+							<td><%= (v_arr[1]/v_arr[0]*100).round.to_f/100 %></td>
+						</tr>
+					<% end %>
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>

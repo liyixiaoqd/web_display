@@ -52,14 +52,11 @@ class FinanceLogAnalyController < ApplicationController
 
 	#提交交易相关数据获取
 	def index_submit_action_chart
-		@sub_hash={}
+		@pay_total_hash={}
 
-		select_condition="controller,action,sum(count) as total"
-		where_condition="storm_topology='finance_log_analysis'"
-		select_condition="substr(begtime,1,13) as ymdh,sum(count) as total"
-		FinanceActionAnalysis.select(select_condition).where(where_condition).group("ymdh").order("ymdh asc").limit(24).each do |faa|
-			key=faa.ymdh
-			@line_hash[key]=faa.total
+		select_condition="paymode,sum(buy_count) as count_total,sum(buy_amount) as amount_total"
+		FinanceUserPaySummary.select(select_condition).group("paymode").each do |fups|
+			@pay_total_hash[fups.paymode]=[fups.count_total,fups.amount_total]
 		end
 	end
 end
