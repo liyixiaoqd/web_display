@@ -1,7 +1,8 @@
 
 <div class="container">
 	<ul class="nav nav-tabs" id="index_tabs">
-		<li role="presentation" class="active"><a href="#bar" aria-controls="pie" data-toggle="tab">CHART</a></li>
+		<li role="presentation" class="active"><a href="#bar" aria-controls="pie" data-toggle="tab">SUMMARY CHART</a></li>
+		<li role="presentation"><a href="#user_pay_times" aria-controls="user_pay_times" data-toggle="tab">USER PAY TIMES</a></li>
 
 		<li role="presentation" class="pull-right"><%=link_to 'index',root_path %></li>
 	</ul>
@@ -12,6 +13,11 @@
 	<div class="tab-pane active" id="bar">
 		<div class="container">
 			<%= render partial:"finance_log_analy/render_submit_action_chart/bar_chart" %>
+		</div>
+	</div>
+	<div class="tab-pane" id="user_pay_times">
+		<div class="container">
+			<%= render partial:"finance_log_analy/render_submit_action_chart/user_pay_times" %>
 		</div>
 	</div>
   </div>

@@ -221,34 +221,28 @@ var chart6 = function () {
 
 var pie_chart_data = [
 	{
-		value: 300,
 		color: "#F7464A",
-		highlight: "#FF5A5E",
-		label: "Red"
+		highlight: "#FF5A5E"
 	},
 	{
-		value: 50,
 		color: "#46BFBD",
-		highlight: "#5AD3D1",
-		label: "Green"
+		highlight: "#5AD3D1"
 	},
 	{
-		value: 100,
 		color: "#FDB45C",
-		highlight: "#FFC870",
-		label: "Yellow"
+		highlight: "#FFC870"
 	},
 	{
-		value: 40,
 		color: "#949FB1",
-		highlight: "#A8B3C5",
-		label: "Grey"
+		highlight: "#A8B3C5"
 	},
 	{
-		value: 120,
 		color: "#4D5360",
-		highlight: "#616774",
-		label: "Dark Grey"
+		highlight: "#616774"
+	},
+	{
+		color: "#6DF360",
+		highlight: "#66FF33"
 	}
 ];
 

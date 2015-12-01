@@ -1,0 +1,28 @@
+<h2>USER PAY TIMES!!</h2>
+
+<div class="well" id="user_pay_times_well">
+	<div class="row">
+		<div class="col-md-12">
+			<table class="table table-striped table-bordered table-hover" id="user_pay_times_table">
+				<thead>
+					<tr>
+						<th>PAY_TIMES</th>
+						<th>COUNT</th>
+						<th>DETAILS</th>
+					</tr>
+				</thead>
+				<tbody>
+					<% @pay_user_times_hash.each do |k,v| %>
+						<tr>
+							<td><%= k %></td>
+							<td><%= v %></td>
+							<td>
+								<%=link_to 'analysis details',user_pay_times_details_path(k),remote: true %>
+							</td>
+						</tr>
+					<% end %>
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>

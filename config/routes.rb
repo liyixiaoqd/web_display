@@ -57,4 +57,5 @@ Rails.application.routes.draw do
   root 'finance_log_analy#index'
   get 'finance_log_analy/index_general_chart' => 'finance_log_analy#index_general_chart'
   get 'finance_log_analy/index_submit_action_chart' => 'finance_log_analy#index_submit_action_chart'
+  get 'finance_log_analy/user_pay_times_detail/:count_enum' => 'finance_log_analy#user_pay_times_detail',as: :user_pay_times_details
 end
