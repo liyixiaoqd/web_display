@@ -113,9 +113,9 @@ class FinanceLogAnalyController < ApplicationController
 			select_condition+="where times=#{params['count_enum'].to_i} "
 		elsif params['count_enum']=="4-5"
 			select_condition+="where times>3 and times<6 "
-		elsif params['count_enum'].to_i=="6-9"
+		elsif params['count_enum']=="6-9"
 			select_condition+="where times>=6 and times<10 "
-		elsif params['count_enum'].to_i=="10+"
+		elsif params['count_enum']=="10+"
 			select_condition+="where times>=10 "
 		end
 
