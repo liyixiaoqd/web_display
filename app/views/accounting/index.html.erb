@@ -1,0 +1,77 @@
+<div class="container">
+	<% if flash[:error].blank? %>
+		<% unless flash[:notice].blank? %>
+			<div class="alert alert-info">
+				<%=  flash[:notice] %>
+			</div>
+		<% end %>
+	<% else %>
+		<div class="alert alert-warning">
+			<%=  flash[:error] %>
+		</div>
+	<% end %>
+
+
+	<div class="well well-sm">	
+		<div class="row">
+			<div class="col-md-4">
+				<%= label_tag(:in_come, "总收入: #{@all_income}" ,class:"label_inline") %> 
+			</div>
+
+			<div class="col-md-4">
+				<%= label_tag(:out_come, "总支出: - #{@all_outcome}" ,class:"label_inline") %> 
+			</div>
+
+			<div class="col-md-4 btn-toolbar">
+				<%= button_to "新增",accounting_new_path(1),class: "btn btn-primary pull-right",method: "get" %>
+			</div>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-md-12">
+			<table class="table table-striped table-bordered table-hover">
+				<thead>
+					<tr>
+						<th>日期</th>
+						<th>收支</th>
+						<th>金额</th>
+						<th>支付方式</th>
+						<th>消费类型</th>
+						<th>备注</th>
+						<th>操作</th>
+					</tr>
+				</thead>
+				<tbody>
+					<% @ars.each do |ar| %>
+						<tr>
+							<td><%= ar.pay_occurrence_time %></td>
+							<td><%= ar.pay_symbol %></td>
+							<td>
+								<% if ar.pay_symbol=="支出" %>
+									- 
+								<% else %>
+									+ 
+								<% end %>					
+								<%= "#{ar.pay_amount} #{ar.pay_currency}" %>
+							</td>
+							<td><%= ar.pay_method %></td>
+							<td> 
+								<% if ar.consumption_sub_type.blank? %>
+									<%= ar.consumption_type %>
+								<% else %>
+									<%= ar.consumption_sub_type %>
+								<% end %>
+							</td>
+							<td> <%= ar.pay_reason %> </td>
+							<td>	
+								<%= link_to "详情",accounting_new_path(1,ar_id: ar.id) ,method: "get" %>
+								<%= link_to "删除",accounting_delete_submit_path(ar.id),method: "post",data: { confirm: "请确认是否删除?\n#{ar.pay_occurrence_time}: #{ar.pay_symbol} #{ar.pay_amount}" } %>
+							</td>
+						</tr>
+					<% end %>
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>

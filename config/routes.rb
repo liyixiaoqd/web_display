@@ -55,7 +55,15 @@ Rails.application.routes.draw do
   #   end
 
   root 'finance_log_analy#index'
+
+  #storm-kafka
   get 'finance_log_analy/index_general_chart' => 'finance_log_analy#index_general_chart'
   get 'finance_log_analy/index_submit_action_chart' => 'finance_log_analy#index_submit_action_chart'
   get 'finance_log_analy/user_pay_times_detail/:count_enum' => 'finance_log_analy#user_pay_times_detail',as: :user_pay_times_details
+
+  #accounting
+  get 'accounting/index' => 'accounting#index'
+  get 'accounting/:user_id/new' => 'accounting#new', as: :accounting_new
+  post 'accounting/:user_id/new_submit' => 'accounting#new_submit', as: :accounting_new_submit
+  post 'accounting/:ar_id/delete_submit' => 'accounting#delete_submit', as: :accounting_delete_submit
 end

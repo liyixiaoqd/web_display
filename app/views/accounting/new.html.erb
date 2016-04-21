@@ -1,0 +1,50 @@
+<div class="container">
+	<div class="well">
+		<%= form_tag(accounting_new_submit_path(1), method: "post",name: "form") do %>
+			<%= label_tag(:label1, "*日期:",class:"label_inline") %> 
+			<%= text_field_tag(:pay_occurrence_time,@ar.pay_occurrence_time) %> </br>
+
+			<%= label_tag(:label2, "*收支:",class:"label_inline") %> 
+			<%= select_tag(:pay_symbol,options_for_select(dynamic_pay_symbol_tag,@ar.pay_symbol)) %> </br>
+
+			<%= label_tag(:label3, "*金额:",class:"label_inline") %>
+			<%= text_field_tag(:pay_amount,@ar.pay_amount) %> 
+			<%= label_tag(:label3_1, "RMB",class:"label_inline") %> </br>
+			
+			<%= label_tag(:label4, "*支付方式:",class:"label_inline") %> 
+			<%= select_tag(:pay_method,options_for_select(dynamic_pay_method_tag,@ar.pay_method)) %> </br>
+
+			<%= label_tag(:label5, "*消费类型:",class:"label_inline") %> 
+			<%= select_tag(:consumption_type,options_for_select(dynamic_consumption_type_tag,@ar.consumption_type)) %> </br>
+			<%= label_tag(:label6, "消费子类型:",class:"label_inline") %> 
+			<%= select_tag(:consumption_sub_type,options_for_select(dynamic_consumption_sub_type_tag,@ar.consumption_sub_type)) %> </br>
+
+			<%= label_tag(:label8, "伙伴:",class:"label_inline") %> 
+			<%= text_field_tag(:pay_partner,@ar.pay_partner) %> </br>
+
+			<%= label_tag(:label1, "实际支付日期:",class:"label_inline") %> 
+			<%= text_field_tag(:pay_actual_time,@ar.pay_actual_time) %> </br>
+
+			<%= label_tag(:label7, "备注:",class:"label_inline") %> 
+			<%= text_area_tag(:pay_reason,@ar.pay_reason) %> </br>
+
+			<% if @ar.id.blank? %>
+				<%= hidden_field_tag :oper_type,"insert" %>
+			<% else %>
+				<%= hidden_field_tag :oper_type,"update" %>
+				<%= hidden_field_tag :ar_id,@ar.id %>
+			<% end %>
+
+			<div class="btn-toolbar">
+				<%= button_to "提交",accounting_new_submit_path,class: "btn btn-primary",method: "post" %>
+				<%= link_to "返回",:back,class: "btn btn-primary" %>
+			</div>
+		<% end %>
+	</div>
+
+	<% unless flash[:error].blank? %>
+		<div class="alert alert-warning">
+			<%=  flash[:error] %>
+		</div>
+	<% end %>
+</div>
