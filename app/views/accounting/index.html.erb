@@ -14,16 +14,21 @@
 
 	<div class="well well-sm">	
 		<div class="row">
-			<div class="col-md-4">
+			<div class="col-md-2">
+				<%= label_tag(:username, "用户:"+session[:username] ,class:"label_inline") %> 
+			</div>
+
+			<div class="col-md-3">
 				<%= label_tag(:in_come, "总收入: #{@all_income}" ,class:"label_inline") %> 
 			</div>
 
-			<div class="col-md-4">
+			<div class="col-md-3">
 				<%= label_tag(:out_come, "总支出: - #{@all_outcome}" ,class:"label_inline") %> 
 			</div>
 
 			<div class="col-md-4 btn-toolbar">
-				<%= button_to "新增",accounting_new_path(1),class: "btn btn-primary pull-right",method: "get" %>
+				<%= link_to "注销",accounting_login_out_path,class: "btn pull-right",method: "post" %>
+				<%= button_to "新增",accounting_new_path,class: "btn btn-primary pull-right",method: "get" %>
 			</div>
 		</div>
 	</div>
@@ -65,7 +70,7 @@
 							</td>
 							<td> <%= ar.pay_reason %> </td>
 							<td>	
-								<%= link_to "详情",accounting_new_path(1,ar_id: ar.id) ,method: "get" %>
+								<%= link_to "详情",accounting_new_path(ar_id: ar.id) ,method: "get" %>
 								<%= link_to "删除",accounting_delete_submit_path(ar.id),method: "post",data: { confirm: "请确认是否删除?\n#{ar.pay_occurrence_time}: #{ar.pay_symbol} #{ar.pay_amount}" } %>
 							</td>
 						</tr>

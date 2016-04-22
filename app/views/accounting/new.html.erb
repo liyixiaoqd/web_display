@@ -1,6 +1,6 @@
 <div class="container">
 	<div class="well">
-		<%= form_tag(accounting_new_submit_path(1), method: "post",name: "form") do %>
+		<%= form_tag(accounting_new_submit_path, method: "post",name: "form") do %>
 			<%= label_tag(:label1, "*日期:",class:"label_inline") %> 
 			<%= text_field_tag(:pay_occurrence_time,@ar.pay_occurrence_time) %> </br>
 
@@ -37,12 +37,18 @@
 
 			<div class="btn-toolbar">
 				<%= button_to "提交",accounting_new_submit_path,class: "btn btn-primary",method: "post" %>
-				<%= link_to "返回",:back,class: "btn btn-primary" %>
+				<%= link_to "返回",:back,class: "btn btn-default" %>
 			</div>
 		<% end %>
 	</div>
 
-	<% unless flash[:error].blank? %>
+	<% if flash[:error].blank? %>
+		<% unless flash[:notice].blank? %>
+			<div class="alert alert-info">
+				<%=  flash[:notice] %>
+			</div>
+		<% end %>
+	<% else %>
 		<div class="alert alert-warning">
 			<%=  flash[:error] %>
 		</div>

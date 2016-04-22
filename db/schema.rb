@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160421042722) do
+ActiveRecord::Schema.define(version: 20160422010504) do
 
   create_table "account_records", force: :cascade do |t|
     t.date     "pay_occurrence_date",                                       null: false
@@ -31,5 +31,16 @@ ActiveRecord::Schema.define(version: 20160421042722) do
   end
 
   add_index "account_records", ["pay_user_id", "pay_occurrence_date"], name: "index_account_records_1", using: :btree
+
+  create_table "account_users", force: :cascade do |t|
+    t.string   "username",   limit: 20,                                         null: false
+    t.string   "password",   limit: 255,                                        null: false
+    t.decimal  "income",                 precision: 10, scale: 2, default: 0.0, null: false
+    t.decimal  "outcome",                precision: 10, scale: 2, default: 0.0, null: false
+    t.datetime "created_at",                                                    null: false
+    t.datetime "updated_at",                                                    null: false
+  end
+
+  add_index "account_users", ["username"], name: "index_account_users_1", using: :btree
 
 end

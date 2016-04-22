@@ -1,27 +1,66 @@
 class AccountingController < ApplicationController
-	REALM = "Accounting"
+	before_action :check_login,:except => [:login,:login_submit]
 
-	before_action :authenticate
-
-
-	def index
-		ar_condition = AccountRecord.where(pay_user_id: 1)
-		@ars = ar_condition.order(pay_occurrence_time: :asc).limit(11)
-
-		@all_income = ar_condition.where(pay_symbol: "收入").sum(:pay_amount)
-		@all_outcome = ar_condition.where(pay_symbol: "支出").sum(:pay_amount)
-
-		if @all_income.blank?
-			@all_income=0.0
-		end
-		
-		if @all_outcome.blank?
-			@all_outcome=0.0
+	def login
+		unless session[:user_id].blank?
+			redirect_to accounting_index_path and return
 		end
 	end
 
+	def login_submit
+		unless session[:user_id].blank?
+			redirect_to accounting_index_path and return
+		end
+
+		begin
+			if params['username'].blank? || params['password'].blank?
+				raise "please input username and password"
+			end
+
+			au=AccountUser.find_by(username: params['username'])
+			if au.blank?
+				raise "#{params['username']} not registed"
+			end
+
+
+			if  params['password'] != Digest::MD5.hexdigest("#{au.password}#{Time.now.strftime("%Y%m%d")}")
+				Rails.logger.info("#{params['password']} <> #{Digest::MD5.hexdigest("#{au.password}#{Time.now.strftime("%Y%m%d")}")}" ) if Rails.env.development?
+				raise "password is wrong,please retry"
+			end
+
+			flash[:notice] = "login success ! welcome #{au.username}"
+
+			session[:user_id] = au.id
+			session[:username] = au.username
+		rescue=>e
+			flash[:error]=e.message
+			redirect_to accounting_login_path and return 
+		end
+
+		redirect_to accounting_index_path
+	end
+
+	def login_out
+		session[:user_id]=nil
+		session[:username]=nil
+
+		redirect_to root_path
+	end
+
+	def index
+		au = AccountUser.find(session[:user_id])
+		Rails.logger.info("#{au.id} ===  #{session[:user_id]}")
+
+		ar_condition = AccountRecord.where(pay_user_id: au.id)
+		@ars = ar_condition.order(pay_occurrence_time: :desc).limit(11)
+
+
+		@all_income = au.income
+		@all_outcome = au.outcome
+	end
+
 	def new
-		user_id=params['user_id']
+		user_id = session[:user_id]
 
 		#修改
 		if params['ar_id'].blank?
@@ -44,7 +83,7 @@ class AccountingController < ApplicationController
 			end
 
 			ar.pay_occurrence_time = params['pay_occurrence_time']
-			ar.pay_user_id = 1
+			ar.pay_user_id = session[:user_id]
 			ar.pay_symbol = params['pay_symbol']
 			ar.pay_amount = params['pay_amount']
 			ar.pay_method = params['pay_method']
@@ -59,7 +98,7 @@ class AccountingController < ApplicationController
 			flash[:notice]="新增成功!"
 		rescue=>e
 			flash[:error]=e.message
-			redirect_to accounting_new_path(1,ar_id: ar.id) and return
+			redirect_to accounting_new_path(ar_id: ar.id) and return
 		end
 
 		redirect_to accounting_index_path
@@ -72,7 +111,7 @@ class AccountingController < ApplicationController
 			if ar_id.blank?
 				raise "id blank?"
 			end
-			AccountRecord.find(ar_id).delete
+			AccountRecord.find(ar_id).destroy
 
 			flash[:notice]="删除成功!"
 		rescue=>e
@@ -83,12 +122,17 @@ class AccountingController < ApplicationController
 	end
 
 	private 
-		def authenticate
-			authenticate_or_request_with_http_digest(REALM) do |username|
-				if username=="liyixiaoqd"
-					Digest::MD5.hexdigest([username,REALM,"accounting"].join(":"))
-				else
-					nil
+		def check_login
+			if session[:user_id].blank?
+				flash[:error] = "please login !"
+				redirect_to accounting_login_path and return
+			end
+
+			unless params['ar_id'].blank?
+				ar=AccountRecord.find(params['ar_id'])
+				if ar.present? && ar.pay_user_id != session[:user_id]
+					flash[:error] = "AccountRecord not belong to you !"
+					redirect_to accounting_login_path
 				end
 			end
 		end

@@ -1,0 +1,34 @@
+<div class="container">
+	<div class="well">
+		<%= form_tag(accounting_login_submit_path, method: "post",name: "form") do %>
+			<div class="form-group">
+				<%= label_tag(:label1, "*用户名:") %> 
+				<%= text_field_tag('username',nil,class: "form-control") %> </br>
+			</div>
+
+			<div class="form-group">
+				<%= label_tag(:label2, "*密码:") %> 
+				<%= password_field_tag(:password,nil,class: "form-control") %> </br>
+			</div>
+
+			<div class="btn-toolbar">
+				<%= button_to "登入",accounting_login_submit_path,class: "btn btn-primary btn-login",method: "post" %>
+				<%= link_to "返回",:back,class: "btn btn-default" %>
+			</div>
+		<% end %>
+	</div>
+
+
+	<% if flash[:error].blank? %>
+		<% unless flash[:notice].blank? %>
+			<div class="alert alert-info">
+				<%=  flash[:notice] %>
+			</div>
+		<% end %>
+	<% else %>
+		<div class="alert alert-warning">
+			<%=  flash[:error] %>
+		</div>
+	<% end %>
+
+</div>
