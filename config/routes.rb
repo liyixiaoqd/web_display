@@ -63,6 +63,7 @@ Rails.application.routes.draw do
 
   #accounting
   get 'accounting/index' => 'accounting#index'
+  post 'accounting/index' => 'accounting#index'   # mobile use 
   get 'accounting/:user_id/new' => 'accounting#new', as: :accounting_new
   post 'accounting/:user_id/new_submit' => 'accounting#new_submit', as: :accounting_new_submit
   post 'accounting/:ar_id/delete_submit' => 'accounting#delete_submit', as: :accounting_delete_submit
