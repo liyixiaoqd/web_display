@@ -13,7 +13,7 @@ class AccountRecord < ActiveRecord::Base
 	# t.string :consumption_type,               :limit=>5,  :null=>false
 	# t.string :consumption_sub_type,       :limit=>10
 	# t.timestamps null: false
-	paginates_per 3
+	paginates_per 30
 
 	DEFAULT_PAY_CURRENCY="RMB"
 	DEFAULT_PAY_REASON="无"
