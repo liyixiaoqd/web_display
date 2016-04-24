@@ -13,6 +13,7 @@ class AccountRecord < ActiveRecord::Base
 	# t.string :consumption_type,               :limit=>5,  :null=>false
 	# t.string :consumption_sub_type,       :limit=>10
 	# t.timestamps null: false
+	paginates_per 3
 
 	DEFAULT_PAY_CURRENCY="RMB"
 	DEFAULT_PAY_REASON="无"
@@ -29,7 +30,7 @@ class AccountRecord < ActiveRecord::Base
 	validates :consumption_type, inclusion: { in: ENUM_CONSUMPTION_TYPE,message: "%{value} is not a valid consumption_type" }
 
 	before_validation :field_check_and_default
-	after_save :sync_account_user_save
+	before_save :sync_account_user_save
 	after_destroy :sync_account_user_destroy
 
 
@@ -73,10 +74,26 @@ class AccountRecord < ActiveRecord::Base
 
 		def sync_account_user_save
 			au = AccountUser.find(pay_user_id)
-			if pay_symbol == "收入"
-				au.income += pay_amount
+			if created_at==updated_at
+				if pay_symbol == "收入"
+					au.income += pay_amount
+				else
+					au.outcome += pay_amount
+				end
 			else
-				au.outcome += pay_amount
+				#回退原记录数据
+				if pay_symbol_was == "收入"
+					au.income -= pay_amount_was
+				else
+					au.outcome -= pay_amount_was
+				end
+
+				#处理更新后数据
+				if pay_symbol == "收入"
+					au.income += pay_amount
+				else
+					au.outcome += pay_amount
+				end
 			end
 
 			au.save!

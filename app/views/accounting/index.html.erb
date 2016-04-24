@@ -22,8 +22,12 @@
 				<%= label_tag(:in_come, "总收入: #{@all_income}" ,class:"label_inline") %> 
 			</div>
 
-			<div class="col-md-3">
+			<div class="col-md-2">
 				<%= label_tag(:out_come, "总支出: - #{@all_outcome}" ,class:"label_inline") %> 
+			</div>
+
+			<div class="col-md-1">
+				<%= link_to "异常同步",accounting_user_sync_record_path,class: "btn btn-sm pull-right",method: "post" %>
 			</div>
 
 			<div class="col-md-4 btn-toolbar">
@@ -77,6 +81,11 @@
 					<% end %>
 				</tbody>
 			</table>
+
+
+			<div class="text-center"> 
+				<%= paginate @ars %> 
+			</div>
 		</div>
 	</div>
 </div>

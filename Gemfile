@@ -46,3 +46,6 @@ group :development, :test do
   gem 'therubyracer'
 end
 
+#Pagination
+gem 'kaminari'
+

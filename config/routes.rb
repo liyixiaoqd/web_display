@@ -70,4 +70,5 @@ Rails.application.routes.draw do
   get 'accounting/new' => 'accounting#new'
   post 'accounting/new_submit' => 'accounting#new_submit'
   post 'accounting/:ar_id/delete_submit' => 'accounting#delete_submit', as: :accounting_delete_submit
+  post 'accounting_user_sync_record' => 'accounting#user_sync_record'
 end

@@ -51,8 +51,9 @@ class AccountingController < ApplicationController
 		au = AccountUser.find(session[:user_id])
 		Rails.logger.info("#{au.id} ===  #{session[:user_id]}")
 
-		ar_condition = AccountRecord.where(pay_user_id: au.id)
-		@ars = ar_condition.order(pay_occurrence_time: :desc).limit(11)
+		#use AccountRecord. paginates_per
+		ar_condition = AccountRecord.where(pay_user_id: au.id).page(value_or_default(params[:page],1))
+		@ars = ar_condition.order(pay_occurrence_time: :desc)
 
 
 		@all_income = au.income
@@ -121,6 +122,35 @@ class AccountingController < ApplicationController
 		redirect_to accounting_index_path
 	end
 
+	def user_sync_record
+		begin
+			au = AccountUser.find(session[:user_id])
+
+			ar_select=AccountRecord.select("sum(pay_amount) as amount,pay_symbol").group(:pay_symbol)
+			in_flag=false
+			out_flag=false
+			ar_select.each do |ar_s|
+				if ar_s['pay_symbol']=="收入"
+					au.income=ar_s['amount']
+					in_flag=true
+				elsif ar_s['pay_symbol']=="支出"
+					au.outcome=ar_s['amount']
+					out_flag=true
+				end
+			end
+
+			au.income=0.0 unless in_flag
+			au.outcome=0.0 unless out_flag
+			au.save
+
+			flash[:notice]="同步成功"
+		rescue=>e
+			flash[:error]="同步失败: #{e.message}"
+		end
+
+		redirect_to accounting_index_path
+	end
+
 	private 
 		def check_login
 			if session[:user_id].blank?
@@ -134,6 +164,14 @@ class AccountingController < ApplicationController
 					flash[:error] = "AccountRecord not belong to you !"
 					redirect_to accounting_login_path
 				end
+			end
+		end
+
+		def value_or_default(value,default_value)
+			if value.blank?
+				default_value
+			else
+				value
 			end
 		end
 end
