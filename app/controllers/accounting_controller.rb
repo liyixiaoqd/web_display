@@ -151,6 +151,35 @@ class AccountingController < ApplicationController
 		redirect_to accounting_index_path
 	end
 
+	def search_submit
+		au = AccountUser.find(session[:user_id])
+
+		@all_income = au.income
+		@all_outcome = au.outcome
+
+		#use AccountRecord. paginates_per
+		ar_condition = AccountRecord.where(pay_user_id: au.id).page(value_or_default(params[:page],1))
+		ar_condition = ar_condition.where(pay_symbol: params['pay_symbol']) if params['pay_symbol']!="全选"
+		ar_condition = ar_condition.where(consumption_type: params['consumption_type']) if params['consumption_type']!="全选"
+		ar_condition = ar_condition.where(consumption_sub_type: params['consumption_sub_type']) if params['consumption_sub_type']!="全选"
+		ar_condition = ar_condition.where(pay_method: params['pay_method']) if params['pay_method']!="全选"
+		ar_condition = ar_condition.where(" pay_amount >= #{params['pay_amount_beg']}") if params['pay_amount_beg'].present?
+		ar_condition = ar_condition.where(" pay_amount <= #{params['pay_amount_end']}") if  params['pay_amount_end'].present? && params['pay_amount_end'].to_f>0.0
+		ar_condition = ar_condition.where(" pay_partner like '%#{params['pay_partner']}%'") if params['pay_partner'].present?
+		ar_condition = ar_condition.where(" pay_reason like '%#{params['pay_reason']}%'") if params['pay_reason'].present?
+		if params['pay_occurrence_date_beg'].present?
+			ar_condition = ar_condition.where(" pay_occurrence_date>='#{params['pay_occurrence_date_beg']}'")
+		end
+		if params['pay_occurrence_date_end'].present?
+			ar_condition = ar_condition.where(" pay_occurrence_date<='#{params['pay_occurrence_date_end']}'")
+		end
+
+		@ars = ar_condition.order(pay_occurrence_time: :desc)
+
+
+		render accounting_index_path
+	end
+
 	private 
 		def check_login
 			if session[:user_id].blank?

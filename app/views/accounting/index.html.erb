@@ -31,10 +31,56 @@
 			</div>
 
 			<div class="col-md-4 btn-toolbar">
-				<%= link_to "注销",accounting_login_out_path,class: "btn pull-right",method: "post" %>
-				<%= button_to "新增",accounting_new_path,class: "btn btn-primary pull-right",method: "get" %>
+				<%= link_to "注销",accounting_login_out_path,class: "btn btn-sm pull-right",method: "post" %>
+				<%= button_to "新增",accounting_new_path,class: "btn btn-primary btn-sm pull-right",method: "get" %>
 			</div>
 		</div>
+	</div>
+
+	<div class="well">
+		<%= form_tag(accounting_search_submit_path, method: "get",name: "form") do %>
+			<div class="row">
+				<div class="col-md-3">
+					<%= label_tag(:label1, "收支:",class:"label_inline") %> 
+					<%= select_tag(:pay_symbol,options_for_select(dynamic_pay_symbol_tag,'全选')) %>
+				</div>
+				<div class="col-md-3">
+					<%= label_tag(:label2, "消费类型:",class:"label_inline") %> 
+					<%= select_tag(:consumption_type,options_for_select(dynamic_consumption_type_tag,'全选')) %>
+				</div>
+				<div class="col-md-3">
+					<%= label_tag(:label3, "消费子类型:",class:"label_inline") %> 
+					<%= select_tag(:consumption_sub_type,options_for_select(dynamic_consumption_sub_type_tag,'全选')) %> 
+				</div>
+				<div class="col-md-3">
+					<%= label_tag(:label4, "支付方式:",class:"label_inline") %> 
+					<%= select_tag(:pay_method,options_for_select(dynamic_pay_method_tag,'全选')) %>
+				</div>
+				<div class="col-md-5">
+					<%= label_tag(:label5, "金额范围:",class:"label_inline") %> 
+					<%= number_field_tag(:pay_amount_beg, 0.0, min: 0) %>
+					-
+					<%= number_field_tag(:pay_amount_end, 0.0, min: 0) %>
+				</div>
+				<div class="col-md-3">
+					<%= label_tag(:label6, "伙伴:",class:"label_inline") %> 
+					<%= text_field_tag(:pay_partner,nil, placeholder: '输入模糊匹配') %>
+				</div>
+				<div class="col-md-4">
+					<%= label_tag(:label7, "备注:",class:"label_inline") %> 
+					<%= text_field_tag(:pay_reason,nil, placeholder: '输入模糊匹配') %>
+				</div>
+				<div class="col-md-11">
+					<%= label_tag(:label8, "日期范围:",class:"label_inline") %> 
+					<%= date_field_tag(:pay_occurrence_date_beg,Time.now.strftime("%Y-%m-01")) %>
+					to
+					<%= date_field_tag(:pay_occurrence_date_end,Time.now.strftime("%Y-%m-%d")) %>
+				</div>
+				<div class="col-md-1">
+					<%= button_to "提交",accounting_search_submit_path,class: "btn btn-primary btn-sm",method: "get" %>
+				</div>
+			</div>
+		<% end %>
 	</div>
 
 	<div class="row">
