@@ -57,7 +57,9 @@ class AccountingController < ApplicationController
 
 
 		@all_income = au.income
+		@search_income=au.income
 		@all_outcome = au.outcome
+		@search_outcome=au.outcome
 	end
 
 	def new
@@ -158,7 +160,7 @@ class AccountingController < ApplicationController
 		@all_outcome = au.outcome
 
 		#use AccountRecord. paginates_per
-		ar_condition = AccountRecord.where(pay_user_id: au.id).page(value_or_default(params[:page],1))
+		ar_condition = AccountRecord.where(pay_user_id: au.id)
 		ar_condition = ar_condition.where(pay_symbol: params['pay_symbol']) if params['pay_symbol']!="全选"
 		ar_condition = ar_condition.where(consumption_type: params['consumption_type']) if params['consumption_type']!="全选"
 		ar_condition = ar_condition.where(consumption_sub_type: params['consumption_sub_type']) if params['consumption_sub_type']!="全选"
@@ -174,7 +176,17 @@ class AccountingController < ApplicationController
 			ar_condition = ar_condition.where(" pay_occurrence_date<='#{params['pay_occurrence_date_end']}'")
 		end
 
-		@ars = ar_condition.order(pay_occurrence_time: :desc)
+		@search_income=0.0
+		@search_outcome=0.0
+		ar_condition.each do |ar|
+			if ar.pay_symbol=="支出"
+				@search_outcome+=ar.pay_amount
+			else
+				@search_income+=ar.pay_amount
+			end
+		end
+
+		@ars = ar_condition.order(pay_occurrence_time: :desc).page(value_or_default(params[:page],1))
 
 
 		render accounting_index_path

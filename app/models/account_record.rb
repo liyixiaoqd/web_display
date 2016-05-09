@@ -30,7 +30,7 @@ class AccountRecord < ActiveRecord::Base
 	validates :consumption_type, inclusion: { in: ENUM_CONSUMPTION_TYPE,message: "%{value} is not a valid consumption_type" }
 
 	before_validation :field_check_and_default
-	before_save :sync_account_user_save
+	after_save :sync_account_user_save
 	after_destroy :sync_account_user_destroy
 
 
@@ -74,6 +74,7 @@ class AccountRecord < ActiveRecord::Base
 
 		def sync_account_user_save
 			au = AccountUser.find(pay_user_id)
+			#Rails.logger.info("#{created_at} <=> #{updated_at} : #{created_at==updated_at}")
 			if created_at==updated_at
 				if pay_symbol == "收入"
 					au.income += pay_amount
@@ -81,6 +82,7 @@ class AccountRecord < ActiveRecord::Base
 					au.outcome += pay_amount
 				end
 			else
+				Rails.logger.info("SYNC_ACCOUNT_USER  OLD: #{pay_symbol_was} - #{pay_amount_was} ; NEW:#{pay_symbol} - #{pay_amount}")
 				#回退原记录数据
 				if pay_symbol_was == "收入"
 					au.income -= pay_amount_was

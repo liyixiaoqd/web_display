@@ -98,6 +98,29 @@
 					</tr>
 				</thead>
 				<tbody>
+					<tr>
+						<td>查询合计</td>
+						<td>收入</td>
+						<td>
+							<% if @search_income.blank? %>
+								0.0
+							<% else %>
+								<%= @search_income %>
+							<% end %>
+						</td>
+						<td>支出</td>
+						<td>
+							- 
+							<% if @search_outcome.blank? %>
+								0.0
+							<% else %>
+								<%= @search_outcome %>
+							<% end %>
+						</td>
+						<td></td>
+						<td></td>
+					</tr>
+					<% page_income=0.0;page_outcome=0.0 %>
 					<% @ars.each do |ar| %>
 						<tr>
 							<td><%= ar.pay_occurrence_time %></td>
@@ -105,8 +128,10 @@
 							<td>
 								<% if ar.pay_symbol=="支出" %>
 									- 
+									<% page_outcome+=ar.pay_amount %>
 								<% else %>
 									+ 
+									<% page_income+=ar.pay_amount %>
 								<% end %>					
 								<%= "#{ar.pay_amount} #{ar.pay_currency}" %>
 							</td>
@@ -125,6 +150,29 @@
 							</td>
 						</tr>
 					<% end %>
+
+					<tr>
+						<td>当页合计</td>
+						<td>收入</td>
+						<td>
+							<% if page_income.blank? %>
+								0.0
+							<% else %>
+								<%= page_income %>
+							<% end %>
+						</td>
+						<td>支出</td>
+						<td>
+							- 
+							<% if page_outcome.blank? %>
+								0.0
+							<% else %>
+								<%= page_outcome %>
+							<% end %>
+						</td>
+						<td></td>
+						<td></td>
+					</tr>
 				</tbody>
 			</table>
 
