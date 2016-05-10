@@ -55,11 +55,8 @@ class AccountingController < ApplicationController
 		ar_condition = AccountRecord.where(pay_user_id: au.id).page(value_or_default(params[:page],1))
 		@ars = ar_condition.order(pay_occurrence_time: :desc)
 
-
 		@all_income = au.income
-		@search_income=au.income
 		@all_outcome = au.outcome
-		@search_outcome=au.outcome
 	end
 
 	def new
@@ -176,18 +173,21 @@ class AccountingController < ApplicationController
 			ar_condition = ar_condition.where(" pay_occurrence_date<='#{params['pay_occurrence_date_end']}'")
 		end
 
-		@search_income=0.0
-		@search_outcome=0.0
+		@ars_all={}
+		AccountRecord::ENUM_PAY_SYMBOL.each do |pay_symbol|
+			@ars_all[pay_symbol]={}
+		end
 		ar_condition.each do |ar|
-			if ar.pay_symbol=="支出"
-				@search_outcome+=ar.pay_amount
+			if @ars_all[ar.pay_symbol][ar.consumption_sub_type].blank?
+				pay_amount = ar.pay_amount
 			else
-				@search_income+=ar.pay_amount
+				pay_amount = @ars_all[ar.pay_symbol][ar.consumption_sub_type]+ar.pay_amount
 			end
+
+			@ars_all[ar.pay_symbol][ar.consumption_sub_type] = pay_amount
 		end
 
 		@ars = ar_condition.order(pay_occurrence_time: :desc).page(value_or_default(params[:page],1))
-
 
 		render accounting_index_path
 	end

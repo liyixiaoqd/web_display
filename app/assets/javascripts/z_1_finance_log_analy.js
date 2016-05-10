@@ -260,6 +260,55 @@ var pie_chart = function(){
 	window.myPie = new Chart(ctx).Pie(pie_chart_data);
 }
 
+var pie_chart_accounting = function(type){
+	var objTable=document.getElementById("pie_chart_table");
+	var pie_chart_data_accounting=[];
+	var pie_chart_data_index=0;
+	var display_pie_chart="";
+	var income=0.0
+	var outcome=0.0
+
+	if(objTable)
+	{
+		for(var i=1;i<objTable.rows.length;i++)
+		{
+			if(objTable.rows[i].cells[0].innerHTML=="支出" && type=="out"){
+				pie_chart_data_accounting[pie_chart_data_index] = pie_chart_data[pie_chart_data_index%pie_chart_data.length]
+				pie_chart_data_accounting[pie_chart_data_index].label=objTable.rows[i].cells[1].innerHTML;
+
+				value=objTable.rows[i].cells[2].innerHTML.replace("+","").replace("-","").trim()
+				pie_chart_data_accounting[pie_chart_data_index].value=value;
+				pie_chart_data_index++;
+			}
+			else {
+				if (objTable.rows[i].cells[0].innerHTML=="支出"){
+					outcome+=parseFloat(objTable.rows[i].cells[2].innerHTML.replace("+","").replace("-",""))
+				}
+				else{
+					income+=parseFloat(objTable.rows[i].cells[2].innerHTML.replace("+","").replace("-",""))
+				}		
+			}
+		}
+
+		if(type=="in_out"){
+			pie_chart_data_accounting[0] = pie_chart_data[0]
+			pie_chart_data_accounting[0].label="收入";
+			pie_chart_data_accounting[0].value=income;
+			pie_chart_data_accounting[1] = pie_chart_data[1]
+			pie_chart_data_accounting[1].label="支出";
+			pie_chart_data_accounting[1].value=outcome;
+		}
+	}
+	if(type=="out") {
+		display_pie_chart="pie_chart_accounting_outcome"
+	}
+	else{
+		display_pie_chart="pie_chart_accounting_compare"
+	}
+
+	var ctx = document.getElementById(display_pie_chart).getContext("2d");
+	window.myPie = new Chart(ctx).Pie(pie_chart_data_accounting);
+}
 
 var line_chart_table = {
 	labels: [],//图上的各点（X坐标）
@@ -368,5 +417,13 @@ $(document).ready(function(){
 	}
 	else if(window.location.pathname=="/finance_log_analy/index_submit_action_chart"){
 		bar_chart_all()
+	}
+	else if(window.location.pathname=="/accounting_search_submit" || window.location.pathname=="/accounting/index"){
+		$('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+			if (e.target.innerHTML=="CHART SUMMARY"){
+				pie_chart_accounting("out")
+				pie_chart_accounting("in_out")
+			}
+		})
 	}
 })
